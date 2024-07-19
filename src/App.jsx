@@ -1,35 +1,96 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/* eslint-disable react/no-unknown-property */
+import { useState, useEffect, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import { XR, createXRStore } from "@react-three/xr";
+import { OrbitControls, Environment } from "@react-three/drei";
+
+const store = createXRStore();
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isRed, setIsRed] = useState(true);
+  const [supportsWebXR, setSupportsWebXR] = useState(true);
+  const videoRef = useRef();
+
+  useEffect(() => {
+    const checkWebXRSupport = async () => {
+      if (navigator.xr) {
+        try {
+          const isSupported = await navigator.xr.isSessionSupported(
+            "immersive-ar"
+          );
+          setSupportsWebXR(isSupported);
+        } catch (error) {
+          setSupportsWebXR(false);
+        }
+      } else {
+        setSupportsWebXR(false);
+      }
+    };
+
+    checkWebXRSupport();
+  }, []);
+
+  useEffect(() => {
+    if (supportsWebXR) {
+      const getCameraStream = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        } catch (error) {
+          console.error("Error accessing camera: ", error);
+        }
+      };
+
+      getCameraStream();
+    }
+  }, [supportsWebXR]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+      {supportsWebXR && (
+        <video
+          ref={videoRef}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            objectFit: "cover",
+          }}
+          autoPlay
+          muted
+        />
+      )}
+      <Canvas
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+        }}
+        gl={{ alpha: true }}>
+        <XR store={store}>
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+          <mesh
+            position={[0, 0, 0]}
+            onClick={() => setIsRed(!isRed)}
+            castShadow
+            receiveShadow>
+            <boxGeometry />
+            <meshStandardMaterial color="red" metalness={0.5} roughness={0.1} />
+          </mesh>
+          <OrbitControls />
+          <Environment preset="sunset" />
+        </XR>
+      </Canvas>
+    </div>
+  );
 }
 
-export default App
+export default App;
