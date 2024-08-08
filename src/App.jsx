@@ -29,7 +29,7 @@ function RotatingBox() {
 }
 
 function RubberDuck() {
-  const { scene } = useGLTF("./rubber_duck_toy.glb");
+  const { scene } = useGLTF("toy.glb");
   const ref = useRef();
 
   useFrame(() => {
