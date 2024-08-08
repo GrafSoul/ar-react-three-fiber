@@ -5,31 +5,33 @@ import { OrbitControls, PerspectiveCamera, useGLTF } from "@react-three/drei";
 
 const store = createXRStore();
 
-// function RotatingBox() {
-//   const meshRef = useRef();
-//   const [isRed, setIsRed] = useState(false);
+function RotatingBox() {
+  const meshRef = useRef();
+  const [isRed, setIsRed] = useState(false);
 
-//   useFrame(() => {
-//     if (meshRef.current) {
-//       meshRef.current.rotation.x += 0.01;
-//       meshRef.current.rotation.y += 0.01;
-//     }
-//   });
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
+    }
+  });
 
-//   return (
-//     <mesh ref={meshRef} position={[0, 0, 0]} onClick={() => setIsRed(!isRed)}>
-//       <boxGeometry args={[1, 1, 1]} />
-//       <meshStandardMaterial
-//         color={isRed ? "red" : "blue"}
-//         metalness={0.5}
-//         roughness={0.1}
-//       />
-//     </mesh>
-//   );
-// }
+  return (
+    <mesh ref={meshRef} position={[-1, 1, 0]} onClick={() => setIsRed(!isRed)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial
+        color={isRed ? "red" : "blue"}
+        metalness={0.5}
+        roughness={0.1}
+      />
+    </mesh>
+  );
+}
 
 function RubberDuck() {
-  const { scene } = useGLTF("toy.glb");
+  const { scene } = useGLTF(
+    "https://grafsoul.github.io/ar-react-three-fiber/toy.glb"
+  );
   const ref = useRef();
 
   useFrame(() => {
@@ -38,7 +40,7 @@ function RubberDuck() {
     }
   });
 
-  return <primitive ref={ref} object={scene} position={[0, 0, 0]} scale={6} />;
+  return <primitive ref={ref} object={scene} position={[-1, 0, 0]} scale={6} />;
 }
 
 function Rat() {
@@ -51,20 +53,17 @@ function Rat() {
     }
   });
 
-  return <primitive ref={ref} object={scene} position={[0, 0, 0]} scale={25} />;
+  return (
+    <primitive ref={ref} object={scene} position={[1, 0.5, 0]} scale={25} />
+  );
 }
 
 export function App() {
   const [useDuck, setUseDuck] = useState(false);
-  // const [useRat, setUseRat] = useState(false);
 
   const handleToggleDuck = () => {
     setUseDuck(!useDuck);
   };
-
-  // const handleToggleRat = () => {
-  //   setUseRat(!useRat);
-  // };
 
   return (
     <>
@@ -75,10 +74,6 @@ export function App() {
         <button className="button" onClick={handleToggleDuck}>
           Toggle Rat/Duck
         </button>
-
-        {/* <button className="button" onClick={handleToggleRat}>
-          Toggle Rat
-        </button> */}
       </div>
 
       <Canvas style={{ width: "100%", height: "100%" }}>
@@ -95,8 +90,8 @@ export function App() {
             castShadow
           />
           <PerspectiveCamera makeDefault position={[0, 2, 8]} />
-          {/* {useRat ? <Rat /> : null} */}
-          {useDuck ? <RubberDuck /> : <Rat />}
+          <Rat />
+          {useDuck ? <RubberDuck /> : <RotatingBox />}
           <OrbitControls />
         </XR>
       </Canvas>
