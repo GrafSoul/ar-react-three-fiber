@@ -5,28 +5,28 @@ import { OrbitControls, PerspectiveCamera, useGLTF } from "@react-three/drei";
 
 const store = createXRStore();
 
-function RotatingBox() {
-  const meshRef = useRef();
-  const [isRed, setIsRed] = useState(false);
+// function RotatingBox() {
+//   const meshRef = useRef();
+//   const [isRed, setIsRed] = useState(false);
 
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
-    }
-  });
+//   useFrame(() => {
+//     if (meshRef.current) {
+//       meshRef.current.rotation.x += 0.01;
+//       meshRef.current.rotation.y += 0.01;
+//     }
+//   });
 
-  return (
-    <mesh ref={meshRef} position={[0, 0, 0]} onClick={() => setIsRed(!isRed)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial
-        color={isRed ? "red" : "blue"}
-        metalness={0.5}
-        roughness={0.1}
-      />
-    </mesh>
-  );
-}
+//   return (
+//     <mesh ref={meshRef} position={[0, 0, 0]} onClick={() => setIsRed(!isRed)}>
+//       <boxGeometry args={[1, 1, 1]} />
+//       <meshStandardMaterial
+//         color={isRed ? "red" : "blue"}
+//         metalness={0.5}
+//         roughness={0.1}
+//       />
+//     </mesh>
+//   );
+// }
 
 function RubberDuck() {
   const { scene } = useGLTF("toy.glb");
@@ -58,22 +58,25 @@ export function App() {
   const [useDuck, setUseDuck] = useState(false);
   const [useRat, setUseRat] = useState(false);
 
+  const handleToggleDuck = () => {
+    setUseDuck(!useDuck);
+  };
+
+  const handleToggleRat = () => {
+    setUseRat(!useRat);
+  };
+
   return (
     <>
       <div className="buttons-container">
         <button className="button" onClick={() => store.enterAR()}>
           Enter AR
         </button>
-        <button
-          className="button"
-          onClick={() => {
-            setUseDuck(!useDuck);
-            setUseRat(false);
-          }}>
+        <button className="button" onClick={handleToggleDuck}>
           Toggle Duck
         </button>
 
-        <button className="button" onClick={() => setUseRat(!useRat)}>
+        <button className="button" onClick={handleToggleRat}>
           Toggle Rat
         </button>
       </div>
@@ -92,7 +95,8 @@ export function App() {
             castShadow
           />
           <PerspectiveCamera makeDefault position={[0, 2, 8]} />
-          {useRat ? <Rat /> : useDuck ? <RubberDuck /> : <RotatingBox />}
+          {/* {useRat ? <Rat /> : null} */}
+          {useDuck ? <RubberDuck /> : <Rat />}
           <OrbitControls />
         </XR>
       </Canvas>
