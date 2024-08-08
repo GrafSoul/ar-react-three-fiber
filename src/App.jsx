@@ -41,8 +41,22 @@ function RubberDuck() {
   return <primitive ref={ref} object={scene} position={[0, 0, 0]} scale={6} />;
 }
 
+function Rat() {
+  const { scene } = useGLTF("rat.glb");
+  const ref = useRef();
+
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.rotation.y += 0.01;
+    }
+  });
+
+  return <primitive ref={ref} object={scene} position={[0, 0, 0]} scale={25} />;
+}
+
 export function App() {
   const [useDuck, setUseDuck] = useState(false);
+  const [useRat, setUseRat] = useState(false);
 
   return (
     <>
@@ -50,8 +64,17 @@ export function App() {
         <button className="button" onClick={() => store.enterAR()}>
           Enter AR
         </button>
-        <button className="button" onClick={() => setUseDuck(!useDuck)}>
+        <button
+          className="button"
+          onClick={() => {
+            setUseDuck(!useDuck);
+            setUseRat(false);
+          }}>
           Toggle Duck
+        </button>
+
+        <button className="button" onClick={() => setUseRat(!useRat)}>
+          Toggle Rat
         </button>
       </div>
 
@@ -69,7 +92,7 @@ export function App() {
             castShadow
           />
           <PerspectiveCamera makeDefault position={[0, 2, 8]} />
-          {useDuck ? <RubberDuck /> : <RotatingBox />}
+          {useRat ? <Rat /> : useDuck ? <RubberDuck /> : <RotatingBox />}
           <OrbitControls />
         </XR>
       </Canvas>
