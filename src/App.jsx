@@ -56,15 +56,15 @@ function Rat() {
 
 export function App() {
   const [useDuck, setUseDuck] = useState(false);
-  const [useRat, setUseRat] = useState(false);
+  // const [useRat, setUseRat] = useState(false);
 
   const handleToggleDuck = () => {
     setUseDuck(!useDuck);
   };
 
-  const handleToggleRat = () => {
-    setUseRat(!useRat);
-  };
+  // const handleToggleRat = () => {
+  //   setUseRat(!useRat);
+  // };
 
   return (
     <>
@@ -73,12 +73,12 @@ export function App() {
           Enter AR
         </button>
         <button className="button" onClick={handleToggleDuck}>
-          Toggle Duck
+          Toggle Rat/Duck
         </button>
 
-        <button className="button" onClick={handleToggleRat}>
+        {/* <button className="button" onClick={handleToggleRat}>
           Toggle Rat
-        </button>
+        </button> */}
       </div>
 
       <Canvas style={{ width: "100%", height: "100%" }}>
