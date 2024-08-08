@@ -13,4 +13,8 @@ export default defineConfig({
       cert: fs.readFileSync("./.cert/cert.pem"),
     },
   },
+  build: {
+    outDir: "docs",
+  },
+  baseurl: "./",
 });
