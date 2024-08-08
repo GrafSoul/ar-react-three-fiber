@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { XR, createXRStore } from "@react-three/xr";
 import { OrbitControls, PerspectiveCamera, useGLTF } from "@react-three/drei";
@@ -78,21 +78,23 @@ export function App() {
 
       <Canvas style={{ width: "100%", height: "100%" }}>
         <XR store={store}>
-          <hemisphereLight
-            skyColor={0xb1e1ff}
-            groundColor={0xb97a20}
-            intensity={2}
-          />
-          <directionalLight
-            color={0xffffff}
-            intensity={2}
-            position={[5, 10, 5]}
-            castShadow
-          />
-          <PerspectiveCamera makeDefault position={[0, 2, 8]} />
-          <Rat />
-          {useDuck ? <RubberDuck /> : <RotatingBox />}
-          <OrbitControls />
+          <Suspense>
+            <hemisphereLight
+              skyColor={0xb1e1ff}
+              groundColor={0xb97a20}
+              intensity={2}
+            />
+            <directionalLight
+              color={0xffffff}
+              intensity={2}
+              position={[5, 10, 5]}
+              castShadow
+            />
+            <PerspectiveCamera makeDefault position={[0, 2, 8]} />
+            <Rat />
+            {useDuck ? <RubberDuck /> : <RotatingBox />}
+            <OrbitControls />
+          </Suspense>
         </XR>
       </Canvas>
     </>
